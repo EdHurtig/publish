@@ -4,11 +4,11 @@ require 'optparse'
 require 'colorize'
 
 def run(cmd)
-  pid = fork do
-    exec cmd
+  system(cmd)
+  unless $?.exitstatus == 0
+    puts "subproccess: #{cmd.bold} Failed with exit ".red + "code #{$?.exitstatus}".bold.red
+    exit
   end
-
-  Process.wait pid
 end
 
 options = {
@@ -53,7 +53,7 @@ branch = options[:branch]
 remote = options[:remote]
 
 puts "[INFO] Pushing commits to #{ remote } #{ branch }".blue
-run "git push origin #{ remote } #{ branch }"
+run "git push #{ remote } #{ branch }"
 
 puts "[INFO] Pushing tags to #{ remote } #{ branch }".blue
 run "git push --tags #{ remote } #{ branch }"
