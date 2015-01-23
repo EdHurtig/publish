@@ -20,13 +20,13 @@ options = {
 }
 OptionParser.new do |opts|
   opts.banner = 'Usage: publish [options]'
-  opts.on('-e', '--berks', 'Run `berks upload && berks update`') do |v|
-    options[:berks] = v
-  end
-  opts.on('-t', '--tag', 'Tag a release with the given tag name') do |v|
+  opts.on('-e', '--berks', 'Run `berks upload && berks update`') do
     options[:berks] = true
   end
-  opts.on('-k', '--kitchen', 'Run `kitchen test`') do |v|
+  opts.on('-t', '--tag', 'Tag a release with the given tag name') do |v|
+    options[:tag] = v
+  end
+  opts.on('-k', '--kitchen', 'Run `kitchen test`') do
     options[:kitchen] = true
   end
   opts.on('-r', '--remote', 'Which remote to push to. Default: origin') do |v|
