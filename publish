@@ -1,1 +1,95 @@
-/Users/eddiehurtig/bin/publish
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'colorize'
+
+def run(cmd)
+  pid = fork do
+    exec cmd
+  end
+
+  Process.wait pid
+end
+
+options = {
+  remote: 'origin',
+  branch: 'master',
+  tag: '',
+  kitchen: false,
+  berks: false,
+}
+OptionParser.new do |opts|
+  opts.banner = 'Usage: publish [options]'
+  opts.on('-e', '--berks', 'Run `berks upload && berks update`') do |v|
+    options[:berks] = v
+  end
+  opts.on('-t', '--tag', 'Tag a release with the given tag name') do |v|
+    options[:berks] = true
+  end
+  opts.on('-k', '--kitchen', 'Run `kitchen test`') do |v|
+    options[:kitchen] = true
+  end
+  opts.on('-r', '--remote', 'Which remote to push to. Default: origin') do |v|
+    options[:remote] = v
+  end
+  opts.on('-b', '--branch', 'Which branch to push to. Default: master') do |v|
+    options[:branch] = v
+  end
+end.parse!
+
+tag = options[:tag]
+
+unless tag.empty?
+  puts "[INFO] Cutting New Version '#{ tag }' and pushing to master".blue
+  run "git tag -a #{ tag } -m 'Tagged #{ tag }'"
+end
+
+if options[:kitchen]
+  puts "[WARNING] Will be running kitchen before this publish: #{ tag }".yellow
+  run 'kitchen test'
+end
+
+branch = options[:branch]
+remote = options[:remote]
+
+puts "[INFO] Pushing commits to #{ remote } #{ branch }".blue
+run "git push origin #{ remote } #{ branch }"
+
+puts "[INFO] Pushing tags to #{ remote } #{ branch }".blue
+run "git push --tags #{ remote } #{ branch }"
+
+if options[:berks]
+  puts "[WARNING] Running berks upload and berks update: #{ tag }".yellow
+  run 'berks upload'
+  run 'berks update'
+end
+
+print '
+                                  .            .
+                                    \\\\          / \\
+                                    ! \\         !  \\   /\\
+                     /\\/\\          .!  L        !   \'.\'  !
+                   .( (  )/\\.     /\'    \\      /         /
+            ......<*)       /\\.  /       \\   /\'        /\'              /\\
+'.blue
+ print '.-.-.-.-. \'+++'.red 
+ print '\\.             /\\/\'        \\/\'        /\'       /\'"\\    / /
+ '.blue
+ print '-\'-\'-\'-\'- .+++'.red 
+ print '/\'  ./.         /\\........./         \\......../    "\'"\'  !
+            """""""   \'\\                  !\'         \\             ..../\'
+                       /                  \\          /           /\'\'
+                       \\       !                                 \\
+                        !      /....               ....\\       /\'/
+                        /     /\'/  "---------------"    \\     ! /\'
+                     /""     /./                      /"\'    /./
+ ===========================================================================
+'.blue
+print '       ______ _   _______ _     _____ _____ _   _  ___________ _ _ _
+       | ___ \\ | | | ___ \\ |   |_   _/  ___| | | ||  ___|  _  \\ | | |
+       | |_/ / | | | |_/ / |     | | \\ `--.| |_| || |__ | | | | | | |
+       |  __/| | | | ___ \\ |     | |  `--. \\  _  ||  __|| | | | | | |
+       | |   | |_| | |_/ / |_____| |_/\\__/ / | | || |___| |/ /|_|_|_|
+       \\_|    \\___/\\____/\\_____/\\___/\\____/\\_| |_/\\____/|___/ (_|_|_)
+
+'.green
