@@ -60,7 +60,8 @@ puts "[INFO] Pushing tags to #{ remote } #{ branch }".blue
 run "git push --tags #{ remote } #{ branch }"
 
 if options[:berks]
-  puts "[WARNING] Running berks upload and berks update: #{ tag }".yellow
+  puts "[WARNING] Running berks install, berks upload and berks update: #{tag}".yellow
+  run 'berks'
   run 'berks upload'
   run 'berks update'
 end
