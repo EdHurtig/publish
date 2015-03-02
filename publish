@@ -6,7 +6,8 @@ require 'colorize'
 def run(cmd)
   system(cmd)
   unless $?.exitstatus == 0
-    puts "subproccess: #{cmd.bold} Failed with exit ".red + "code #{$?.exitstatus}".bold.red
+    print "subproccess: #{cmd.bold} Failed with exit ".red
+    puts "code #{$?.exitstatus}".bold.red
     exit
   end
 end
