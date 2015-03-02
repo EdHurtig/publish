@@ -41,23 +41,23 @@ end.parse!
 tag = options[:tag]
 
 unless tag.empty?
-  puts "[INFO] Cutting New Version '#{ tag }' and pushing to master".blue
-  run "git tag -a #{ tag } -m 'Tagged #{ tag }'"
+  puts "[INFO] Cutting New Version '#{tag}' and pushing to master".blue
+  run "git tag -a #{tag} -m 'Tagged #{tag}'"
 end
 
 if options[:kitchen]
-  puts "[WARNING] Will be running kitchen before this publish: #{ tag }".yellow
+  puts "[WARNING] Will be running kitchen before this publish: #{tag}".yellow
   run 'kitchen test'
 end
 
 branch = options[:branch]
 remote = options[:remote]
 
-puts "[INFO] Pushing commits to #{ remote } #{ branch }".blue
-run "git push #{ remote } #{ branch }"
+puts "[INFO] Pushing commits to #{remote} #{branch}".blue
+run "git push #{remote} #{branch}"
 
-puts "[INFO] Pushing tags to #{ remote } #{ branch }".blue
-run "git push --tags #{ remote } #{ branch }"
+puts "[INFO] Pushing tags to #{remote} #{branch}".blue
+run "git push --tags #{remote} #{branch}"
 
 if options[:berks]
   puts "[WARNING] Running berks install, berks upload and berks update: #{tag}".yellow
