@@ -24,16 +24,16 @@ OptionParser.new do |opts|
   opts.on('-e', '--berks', 'Run `berks upload && berks update`') do
     options[:berks] = true
   end
-  opts.on('-t', '--tag', 'Tag a release with the given tag name') do |v|
+  opts.on('-t', '--tag [TAG]', 'Tag a release with the given tag name') do |v|
     options[:tag] = v
   end
   opts.on('-k', '--kitchen', 'Run `kitchen test`') do
     options[:kitchen] = true
   end
-  opts.on('-r', '--remote', 'Which remote to push to. Default: origin') do |v|
+  opts.on('-r', '--remote [REMOTE]', 'Which remote to push to (origin)') do |v|
     options[:remote] = v
   end
-  opts.on('-b', '--branch', 'Which branch to push to. Default: master') do |v|
+  opts.on('-b', '--branch [BRANCH]', 'Which branch to push to (master)') do |v|
     options[:branch] = v
   end
 end.parse!
